@@ -1,0 +1,32 @@
+[
+	{
+		"enabled": true,
+		"id": "08c47d42-d13f-4de5-980f-a968855ee32a",
+		"name": "Rule Group 1",
+		"filter": {
+			"condition": "starts-with",
+			"key": "page-url",
+			"value": ""
+		},
+		"rules": [
+			{
+				"enabled": true,
+				"id": "e6c668e7-1341-4de8-969f-b79a397cccc6",
+				"criteria": {
+					"key": "url",
+					"condition": "equals",
+					"value": "https://demo.srgeo.com.tw/TP_PROJECT_SV/api/v1/Member/Login_User"
+				},
+				"actions": [
+					{
+						"details": {
+							"name": "loginFrom",
+							"value": "0"
+						},
+						"type": "add-query-param"
+					}
+				]
+			}
+		]
+	}
+]

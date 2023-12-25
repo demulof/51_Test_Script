@@ -20,6 +20,12 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 ## 單元測試模組，線性測試用不到
 import unittest
+## 上傳檔案
+import pyautogui
+##  時間api
+from datetime import datetime
+
+
 
 ## 設定Chrome的瀏覽器彈出時遵照的規則
 ## 這串設定是防止瀏覽器上頭顯示「Chrome正受自動控制」
@@ -67,82 +73,86 @@ class Test(unittest.TestCase):
 
     ## Test Case 的命名方式務必以「test_01_* ~ test_99_*」為主，讓爬蟲依照順序走
     ## """裡面的註解就是報表產生後的CASE描述文字。
-    ## time.sleep(number)數字代表一秒
-    def test_01_extension(self):
+    def test_01_Extension(self):
         """
         設置驗證碼插件
-        """
-        #新增請求請求攔截規則(New Rule Group)
-        self.click_button("/html/body/app-root/div/div[1]/app-rule-groups/div/div[1]/ul[1]/li/sl-tooltip/button")
-        #點擊請求類型運算式
-        self.click_button("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[1]/div/div[2]/ng-select")
-        #選擇請求類型運算式
-        self.click_button("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[1]/div/div[2]/ng-select/ng-dropdown-panel/div/div[2]/div[2]")
-        #輸入請求值
-        self.send_input("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[1]/div/div[3]/input", "https://demo.srgeo.com.tw/TP_PROJECT_SV/api/v1/Member/Login_User")
-        #點擊執行動作
-        self.click_button("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[2]/div/table/tbody/tr/td[1]/ng-select")
-        #選擇執行動作
-        self.click_button("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[2]/div/table/tbody/tr/td[1]/ng-select/ng-dropdown-panel/div/div[2]/div[7]")
-        #輸入動作名稱
-        self.send_input("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[2]/div/table/tbody/tr/td[2]/input", "loginFrom")
-        #輸入動作值
-        self.send_input("/html/body/app-root/div/div[1]/app-rule-groups/div/div[2]/app-edit-rule-group/div/div/div[2]/div/ul/li/app-edit-rule/div/div[2]/div/table/tbody/tr/td[3]/input", "0")
-        #點擊開啟設定
+        """   
+        ## 配合chrome插件Request-Interceptor
+        self.send_input("/html/body/app-root/div/nav/div/ul/li[3]/sl-tooltip/button/input", "D:\\test_script\\request_interceptor_rules.json")
         self.click_button("/html/body/app-root/div/nav/div/ul/li[5]/sl-tooltip/app-toggle/div")
-        #點擊儲存
         self.click_button("/html/body/app-root/div/nav/div/ul/li[4]/sl-tooltip/button")
-
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
-        # button_uploadfile = self.driver.find_element(By.XPATH, "/html/body/app-root/div/nav/div/ul/li[3]/sl-tooltip/button")
-        # button_uploadfile.send_keys("D:\\test_script\\request_interceptor_rules.json")
-        # button_uploadfile.click()
-        # time.sleep(2)
-        # file_input = self.driver.find_element(By.XPATH, '//input[@type="file"]')
-        # file_input.send_keys("D:\\test_script\\request_interceptor_rules.json")
     
-    def test_02_login(self):
+    def test_02_Login(self):
         """
         開啟並登入履約系統
         """
-        ## 等待頁面中的HTML，XPATH = '帳號欄位xpath'這個元素出現後才執行動作
+        ## 等待頁面中有帳號輸入欄位
         try:
             element = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]"))
             )
         finally:
-            ## 找到帳號、密碼、驗證碼框的XPATH並且輸入
-            ## 配合chrome插件Request-Interceptor
-            ## 寫法上也通driver.find_element(By.XPATH, '//xxx')
-            input_Account = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]")
-            input_Account.send_keys("tsuno")
-            input_Password = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]")
-            input_Password.send_keys("Samuer20000118*")
-            input_Captcha = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]")
-            input_Captcha.send_keys("111111")
-            ## 找到登入按鈕後按下
-            button_Login = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
-            button_Login.click()
+            ## 輸入帳號
+            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]", "tsuno")
+            ## 輸入密碼
+            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]", "Samuer20000118*")
+            ## 輸入驗證碼
+            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]", "111111")
+            ## 點擊登入鈕
+            self.click_button("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
 
-            time.sleep(3)
-
-    def test_03_createsubproject(self):
+    def test_03_CreateSubproject(self):
         """
         新增分支計畫資料
         """
-        time.sleep(1)
-        ## 等待頁面中的HTML，XPATH = '預算管控xpath'這個元素出現後才執行動作
+        ## 等待頁面中有預算管控目錄鈕
         try:
             element = WebDriverWait(self.driver, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]"))
             )
         finally:
+            ## 點擊預算管控目錄鈕
+            self.click_button("//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]")
             time.sleep(1)
-        button_Budget = self.driver.find_element(By.XPATH, "//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]")
-        button_Budget.click()
+            ## 點擊分支計畫鈕
+            self.click_button("/html[1]/body[1]/div[1]/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/ul[1]/li[1]/ul[1]/div[1]/div[1]/div[2]/div[1]/span[1]")
+            try:
+                element = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]"))
+                )
+            finally:
+                ## 點擊新增分支計畫鈕
+                self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]")
+                try:
+                    element = WebDriverWait(self.driver, 10).until(
+                        EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]"))
+                    )
+                    subProjectId = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[3]/div[1]/div[1]/div[2]")
+                    element = WebDriverWait(self.driver, 10).until(
+                        subProjectId.get_attribute("value")  
+                    )
+                finally:
+                    ## 目前時間轉文字
+                    now = datetime.now()
+                    DateTime = datetime.strftime(now, '%Y-%m-%d-%H-%M-%S')
+                    global subProjectName
+                    subProjectName = "腳本測試" + DateTime
+                    ## 輸入分支計畫名稱
+                    self.send_input("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]", subProjectName)
+                    ## 點擊完成編輯
+                    self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/button[2]")
 
-        # time.sleep(3)
+                    time.sleep(10)
+
+    def test_04_CreateProject(self):
+        """
+        新增計畫資料
+        """
+    
+
+
 
 # basedir就是存放所有TEST Case的目錄，讓它爬 pattern = '*.py'，所以要做哪個類別的測試就指定哪個前贅
 # 路徑盡量放D槽喔，除非你的電腦只有C
@@ -157,6 +167,6 @@ if __name__ == '__main__':
 
     # 結果產生Report 檔案名稱為 filename, 敘述為 description, log_path 預設放在跟目錄底下就行
     result.report(filename='report',
-                  description='first_test', log_path='D:/test_script/')
+                  description='51test', log_path='D:/test_script/')
 
 # 啟動自動化指令，在終端機輸入: & C:/Users/你的使用者帳號/AppData/Local/Programs/Python/Python+版本號/python.exe d:/資料夾名稱/檔案名稱.py

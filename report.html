@@ -7132,9 +7132,9 @@
     "testResult": [
         {
             "className": "Test",
-            "methodName": "test_01_extension",
+            "methodName": "test_01_Extension",
             "description": "\n        設置驗證碼插件\n        ",
-            "spendTime": "0.653 s",
+            "spendTime": "0.262 s",
             "status": "成功",
             "log": [
                 ""
@@ -7142,9 +7142,9 @@
         },
         {
             "className": "Test",
-            "methodName": "test_02_login",
+            "methodName": "test_02_Login",
             "description": "\n        開啟並登入履約系統\n        ",
-            "spendTime": "0.246 s",
+            "spendTime": "0.262 s",
             "status": "成功",
             "log": [
                 ""
@@ -7152,20 +7152,37 @@
         },
         {
             "className": "Test",
-            "methodName": "test_03_createsubproject",
+            "methodName": "test_03_CreateSubproject",
             "description": "\n        新增分支計畫資料\n        ",
-            "spendTime": "3.07 s",
+            "spendTime": "5.61 s",
+            "status": "失败",
+            "log": [
+                "",
+                "Traceback (most recent call last):\n",
+                "  File \"C:\\Users\\10346\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\unittest\\case.py\", line 58, in testPartExecutor\n    yield\n",
+                "  File \"C:\\Users\\10346\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\unittest\\case.py\", line 636, in run\n    self._callTestMethod(testMethod)\n",
+                "  File \"C:\\Users\\10346\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\unittest\\case.py\", line 589, in _callTestMethod\n    if method() is not None:\n       ^^^^^^^^\n",
+                "  File \"D:\\test_script\\scriptTest_51.py\", line 133, in test_03_CreateSubproject\n    element = WebDriverWait(self.driver, 10).until(\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n",
+                "  File \"C:\\Users\\10346\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\site-packages\\selenium\\webdriver\\support\\wait.py\", line 96, in until\n    value = method(self._driver)\n            ^^^^^^^^^^^^^^^^^^^^\n",
+                "TypeError: 'NoneType' object is not callable\n"
+            ]
+        },
+        {
+            "className": "Test",
+            "methodName": "test_04_CreateProject",
+            "description": "\n        新增計畫資料\n        ",
+            "spendTime": "0.0 s",
             "status": "成功",
             "log": [
                 ""
             ]
         }
     ],
-    "testName": "first_test",
-    "testAll": 3,
-    "testFail": 0,
-    "beginTime": "2023-12-22 09:34:18",
-    "totalTime": "10s",
+    "testName": "51test",
+    "testAll": 4,
+    "testFail": 1,
+    "beginTime": "2023-12-26 08:26:36",
+    "totalTime": "12s",
     "testSkip": 0,
     "testError": 0
 };

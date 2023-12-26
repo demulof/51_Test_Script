@@ -127,13 +127,10 @@ class Test(unittest.TestCase):
                 self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]")
                 try:
                     element = WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]"))
-                    )
-                    subProjectId = self.driver.find_element(By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[3]/div[1]/div[1]/div[2]")
-                    element = WebDriverWait(self.driver, 10).until(
-                        subProjectId.get_attribute("value")  
+                        EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]")),
                     )
                 finally:
+                    time.sleep(1)
                     ## 目前時間轉文字
                     now = datetime.now()
                     DateTime = datetime.strftime(now, '%Y-%m-%d-%H-%M-%S')
@@ -148,7 +145,20 @@ class Test(unittest.TestCase):
         """
         新增計畫資料
         """
-    
+        try:
+            element = WebDriverWait(self.driver, 10).until(
+                EC.text_to_be_present_in_element((By.XPATH, "//*[@id='app']/section/section/main/div/div/div[3]/div/div[1]/span"), subProjectName)
+            )
+        finally:
+            self.click_button("/html/body/div/section/aside/div/div[2]/ul/li[3]/ul/li/ul/div[1]/div/div[2]/div[2]/span[1]")
+            try:
+                element = WebDriverWait(self.driver, 10).until(
+                    EC.presence_of_all_elements_located((By.XPATH, "/html/body/div/section/section/main/div/div/div[4]/div[2]/button"))
+                )
+            finally:
+                ## 點擊新增分支計畫鈕
+                self.click_button("/html/body/div/section/section/main/div/div/div[4]/div[2]/button")
+
 
 
 

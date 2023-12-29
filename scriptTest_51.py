@@ -25,7 +25,15 @@ import pyautogui
 ##  時間api
 from datetime import datetime
 
-
+## 帳號
+global account
+account = "tsuno"
+## 密碼
+global passWord
+passWord = "Samuer20000118*"
+## 分支計畫名稱 subProjectName
+## 計畫名稱 projectName
+## 標案名稱 bidName
 
 ## 設定Chrome的瀏覽器彈出時遵照的規則
 ## 這串設定是防止瀏覽器上頭顯示「Chrome正受自動控制」
@@ -60,7 +68,6 @@ class Test(unittest.TestCase):
     
     @classmethod
     def tearDownClass(self):
-        ## 關閉伺服器
         self.driver.quit()
 
     def click_button(self, xpath):
@@ -88,76 +95,93 @@ class Test(unittest.TestCase):
         """
         開啟並登入履約系統
         """
+        global wait
+        wait = WebDriverWait(self.driver, 10)
         ## 等待頁面中有帳號輸入欄位
-        try:
-            element = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]"))
-            )
-        finally:
-            ## 輸入帳號
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]", "tsuno")
-            ## 輸入密碼
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]", "Samuer20000118*")
-            ## 輸入驗證碼
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]", "111111")
-            ## 點擊登入鈕
-            self.click_button("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]"))
+        )
+        ## 輸入帳號
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]", account)
+        ## 輸入密碼
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]", passWord)
+        ## 輸入驗證碼
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]", "111111")
+        ## 點擊登入鈕
+        self.click_button("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
 
     def test_03_CreateSubproject(self):
         """
         新增分支計畫資料
         """
         ## 等待頁面中有預算管控目錄鈕
-        try:
-            element = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]"))
-            )
-        finally:
-            ## 點擊預算管控目錄鈕
-            self.click_button("//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]")
-            time.sleep(1)
-            ## 點擊分支計畫鈕
-            self.click_button("/html[1]/body[1]/div[1]/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/ul[1]/li[1]/ul[1]/div[1]/div[1]/div[2]/div[1]/span[1]")
-            try:
-                element = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]"))
-                )
-            finally:
-                ## 點擊新增分支計畫鈕
-                self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]")
-                try:
-                    element = WebDriverWait(self.driver, 10).until(
-                        EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]")),
-                    )
-                finally:
-                    time.sleep(1)
-                    ## 目前時間轉文字
-                    now = datetime.now()
-                    DateTime = datetime.strftime(now, '%Y-%m-%d-%H-%M-%S')
-                    global subProjectName
-                    subProjectName = "腳本測試" + DateTime
-                    ## 輸入分支計畫名稱
-                    self.send_input("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]", subProjectName)
-                    ## 點擊完成編輯
-                    self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/button[2]")
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]"))
+        )
+        ## 點擊預算管控目錄鈕
+        self.click_button("//body/div[@id='app']/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/div[1]/div[1]")
+        time.sleep(1)
+        ## 點擊分支計畫鈕
+        self.click_button("/html[1]/body[1]/div[1]/section[1]/aside[1]/div[1]/div[2]/ul[1]/li[3]/ul[1]/li[1]/ul[1]/div[1]/div[1]/div[2]/div[1]/span[1]")
+        wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]"))
+        )
+        ## 點擊新增分支計畫鈕
+        self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[4]/div[2]/button[1]")
+        wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, "/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]")),
+        )
+        # subProjectNum = self.driver.find_element(By.XPATH, '//*[@id="app"]/section/section/main/div/div/div[3]/div/div[3]/form/div[3]/div/div/div[2]').get_attribute('value')
+        wait.until(
+            EC.text_to_be_present_in_element((By.XPATH,'//*[@id="app"]/section/section/main/div/div/div[3]/div/div[3]/form/div[3]/div/div/div[2]'), '')
+        )
+        ## 目前時間轉文字
+        now = datetime.now()
+        DateTime = datetime.strftime(now, '%Y-%m-%d-%H-%M-%S')
+        global subProjectName
+        subProjectName = "腳本測試" + DateTime
+        ## 輸入分支計畫名稱
+        self.send_input("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[3]/form[1]/div[1]/div[1]/div[1]/div[2]/div[1]/input[1]", subProjectName)
+        ## 點擊完成編輯
+        self.click_button("/html[1]/body[1]/div[1]/section[1]/section[1]/main[1]/div[1]/div[1]/div[3]/div[1]/div[1]/div[1]/button[2]")
 
     def test_04_CreateProject(self):
         """
         新增計畫資料
         """
-        try:
-            element = WebDriverWait(self.driver, 10).until(
-                EC.text_to_be_present_in_element((By.XPATH, "//*[@id='app']/section/section/main/div/div/div[3]/div/div[1]/span"), subProjectName)
-            )
-        finally:
-            self.click_button("/html/body/div/section/aside/div/div[2]/ul/li[3]/ul/li/ul/div[1]/div/div[2]/div[2]/span[1]")
-            try:
-                element = WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_all_elements_located((By.XPATH, "/html/body/div/section/section/main/div/div/div[4]/div[2]/button"))
-                )
-            finally:
-                ## 點擊新增分支計畫鈕
-                self.click_button("/html/body/div/section/section/main/div/div/div[4]/div[2]/button")
+        wait.until(
+            EC.text_to_be_present_in_element((By.XPATH, "//*[@id='app']/section/section/main/div/div/div[3]/div/div[1]/span"), subProjectName)
+        )
+        self.click_button("/html/body/div/section/aside/div/div[2]/ul/li[3]/ul/li/ul/div[1]/div/div[2]/div[2]/span[1]")
+        wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, "/html/body/div/section/section/main/div/div/div[4]/div[2]/button"))
+        )
+        ## 點擊新增計畫資料鈕
+        self.click_button("/html/body/div/section/section/main/div/div/div[4]/div[2]/button")
+        ## 等待分支計畫名稱輸入欄
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="pane-basic"]/div[2]/form/div[2]/div/div/div[2]/div/div/input'))
+        )
+        self.click_button('//*[@id="pane-basic"]/div[2]/form/div[2]/div/div/div[2]/div/div/input')
+        ## 等待分支計畫名稱選單展開
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[2]/div[1]/div[1]/ul'))
+        )
+        subProjectName_ul = self.driver.find_element(By.XPATH, '/html/body/div[2]/div[1]/div[1]/ul')
+        options = subProjectName_ul.find_elements(By.TAG_NAME,'li')
+        for option in options:
+            if subProjectName in option.text:
+                option.click()
+                break
+        
+        # projectNum = self.driver.find_element(By.XPATH, '//*[@id="pane-basic"]/div[5]/form/div[2]/div/div/div[2]/div').text
+        wait.until(
+            # projectNum != '暫無資料'
+            lambda driver: not EC.text_to_be_present_in_element((By.XPATH, '//*[@id="pane-basic"]/div[5]/form/div[2]/div/div/div[2]/div'), '暫無資料')
+        )
+        
+        self.send_input('//*[@id="pane-basic"]/div[5]/form/div[1]/div/div[1]/div[2]/div[2]/input', 'あーあ')
+        time.sleep(300)
 
 
 
@@ -167,8 +191,9 @@ class Test(unittest.TestCase):
 basedir = "D:/test_script/"
 if __name__ == '__main__':
     # 取得資料夾目錄底下，符合後面任何副檔名為.py，並進行所有test的測試項目
-    test_suite = unittest.defaultTestLoader.discover(
-        basedir, pattern='*.py')
+    # test_suite = unittest.defaultTestLoader.discover(
+    #     basedir, pattern='*.py')
+    test_suite = unittest.TestLoader().loadTestsFromTestCase(Test)
 
     # 測試結果加入到 BeautifulReport 套件內
     result = BeautifulReport(test_suite)

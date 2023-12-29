@@ -80,6 +80,11 @@ class Test(unittest.TestCase):
         input = self.driver.find_element(By.XPATH, xpath)
         input.send_keys(value)
 
+    def clear_send_input(self, xpath, value):
+        input = self.driver.find_element(By.XPATH, xpath)
+        input.clear()
+        input.send_keys(value)
+
     ## Test Case 的命名方式務必以「test_01_* ~ test_99_*」為主，讓爬蟲依照順序走
     ## """裡面的註解就是報表產生後的CASE描述文字。
     def test_01_Extension(self):
@@ -97,75 +102,100 @@ class Test(unittest.TestCase):
         """
         開啟並登入履約系統
         """
+        global wait
+        wait = WebDriverWait(self.driver, 10)
         ## 等待頁面中有帳號輸入欄位
-        try:
-            element = WebDriverWait(self.driver, 10).until(
-                EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]"))
-            )
-        finally:
-            ## 輸入帳號
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]", account)
-            ## 輸入密碼
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]", passWord)
-            ## 輸入驗證碼
-            self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]", "111111")
-            ## 點擊登入鈕
-            self.click_button("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]"))
+        )
+        ## 輸入帳號
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[1]/div[1]/div[2]/input[1]", account)
+        ## 輸入密碼
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[2]/div[1]/div[2]/input[1]", passWord)
+        ## 輸入驗證碼
+        self.send_input("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/form[1]/div[3]/div[1]/div[2]/div[1]/input[1]", "111111")
+        ## 點擊登入鈕
+        self.click_button("/html[1]/body[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]/button[1]")
 
     def test_03_EnterCM(self):
         """
         進入施工管理
         """
         ## 等待施工履約目錄鈕
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[@id='app']/section/aside/div/div[2]/ul/li[3]/div/div"))
         )
         self.click_button("//*[@id='app']/section/aside/div/div[2]/ul/li[3]/div/div")
-        time.sleep(1)
+        ## 等待施工履約目錄展開
+        wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, '//*[@id="app"]/section/aside/div/div[2]/ul/li[3]/ul/li/ul/li[9]/div/span'))
+        )
+        ## 等待施工履約目錄中選項可點擊
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, '//*[@id="app"]/section/aside/div/div[2]/ul/li[3]/ul/li/ul/li[9]/div/span'))
+        )
         self.click_button("//*[@id='app']/section/aside/div/div[2]/ul/li[3]/ul/li/ul/li[3]/div/span")
+
+    def test_04_SearchProject(self):
+        """
+        搜尋進行標案並進入B2.2
+        """
         ## 等待標案列表載入完成
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, "//*[@id='app']/section/section/main/div/div[4]/div[2]/div[3]/table/tbody/tr[1]/td[1]/div"))
         )
         self.send_input("//*[@id='app']/section/section/main/div/div[2]/div/div/div[5]/div[2]/div/div/input", projectName)
-        ## 等待搜尋鈕可按
-        element = WebDriverWait(self.driver, 10).until(
+        ## 等待搜尋列表顯示標案可按
+        wait.until(
             EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[1]/div[1]/ul/li[149]/span'))
         )
         self.click_button("/html/body/div[2]/div[1]/div[1]/ul/li[149]/span")
         self.click_button("//*[@id='app']/section/section/main/div/div[2]/div/div/div[5]/div[2]/button")
         ## 等待標案列表搜尋結果載入完成
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.text_to_be_present_in_element((By.XPATH, '//*[@id="app"]/section/section/main/div/div[4]/div[2]/div[3]/table/tbody/tr/td[1]/div'),projectName)
         )
         self.click_button('//*[@id="app"]/section/section/main/div/div[4]/div[2]/div[3]/table/tbody/tr/td[1]/div')
         ## 等待B2.2功能紐
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/aside/div/div[1]/div/div[4]/div'))
         )
         self.click_button('//*[@id="app"]/section/section/main/div/div[2]/section/aside/div/div[1]/div/div[4]/div')
+
+    def test_05_CreateCDiaryA(self):
+        """
+        新增施工日誌第一聯
+        """
         ## 等待新增施工日誌紐
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="pane-first"]/div[1]/h2/div/button'))
         )
-        time.sleep(2)
+        ## 等待載入元素可見
+        wait.until(
+            EC.visibility_of_element_located((By.XPATH, '//*[@id="pane-first"]/div[1]/div[2]/div[2]/div[5]'))
+        )
+        ## 等待載入元素不可見
+        wait.until(
+            EC.invisibility_of_element_located((By.XPATH, '//*[@id="pane-first"]/div[1]/div[2]/div[2]/div[5]'))
+        )
+        # time.sleep(2)
         self.click_button('//*[@id="pane-first"]/div[1]/h2/div/button')
         ## 等待確認日期彈窗
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="pane-first"]/div[2]/div/div[3]/span/button[2]'))
         )
         self.click_button('//*[@id="pane-first"]/div[2]/div/div[3]/span/button[2]')
         ## 等待施工日誌第一聯載入完成
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.text_to_be_present_in_element((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[4]/div/div/div[2]/span'),projectName)
         )
         self.click_button('//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div/div/div[2]/div[1]/div[1]/input')
         ## 等待上午天氣選單選項出現
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[7]/span'))
         )
         ## 等待上午天氣選單選項可點
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[7]/span'))
         )
         random_Weather_Am = random.randint(1,7)
@@ -173,15 +203,40 @@ class Test(unittest.TestCase):
         self.click_button(f'//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[1]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[{random_Weather_Am}]')
         self.click_button('//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[2]/div/div/div[2]/div[1]/div[1]/input')
         ## 等待下午天氣選單選項出現
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.presence_of_element_located((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[2]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[7]/span'))
         )
         ## 等待下午天氣選單選項可點
-        element = WebDriverWait(self.driver, 10).until(
+        wait.until(
             EC.element_to_be_clickable((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[2]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[7]/span'))
         )
         self.click_button(f'//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[2]/div/div/div[2]/div[1]/div[2]/div[1]/div[1]/ul/li[{random_Weather_Pm}]')
-        time.sleep(5)
+        excepted_Progress_str = self.driver.find_element(By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[12]/div/div/div[2]/div/div/div/input').get_attribute('value')
+        excepted_Progress = float(excepted_Progress_str)
+        self.clear_send_input('//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[1]/div/form/div[12]/div/div/div[2]/div/div/div/input', excepted_Progress+1)
+        ## 施工項目待考慮寫法
+
+        ## 材料名稱
+
+
+        ## 工別
+
+
+        ## 機具名稱
+
+
+        ## 施工前檢查
+        self.click_button('/html/body/div[1]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[13]/div[2]/div[1]/div/label[1]')
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, '//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[13]/div[2]/div[2]/div/div/button'))
+        )
+        self.click_button('//*[@id="app"]/section/section/main/div/div[2]/section/main/div/div[1]/div[2]/div[3]/div/div/div/div[13]/div[2]/div[2]/div/div/button')
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, '/html/body/div[4]/div/div[2]/div[3]/div'))
+        )
+        self.send_input('/html/body/div[4]/div/div[2]/div[3]/div/div/input', 'D:\\test_script\\test_files\\docx檔.docx')
+        self.click_button('/html/body/div[4]/div/div[2]/div[4]/button[2]')
+        time.sleep(300)
 
         
 

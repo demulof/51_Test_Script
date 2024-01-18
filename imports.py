@@ -20,13 +20,70 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 ## 單元測試模組，線性測試用不到
 import unittest
-## 上傳檔案
-import pyautogui
 from datetime import datetime
-from selenium.common.exceptions import StaleElementReferenceException
-import random
 ## 在當前終端機顯示log
 import logging
-## 自動開啟檔案
-import platform
-import subprocess
+## 上傳檔案
+import pyautogui
+## 其他
+import random
+
+## Chrome設定
+options = webdriver.ChromeOptions()
+options.add_experimental_option("excludeSwitches", ["enable-automation"])
+options.add_experimental_option('useAutomationExtension', False)
+options.add_extension('D:\\test_script\\extension_files\\1.6.0_0.crx')
+options.add_experimental_option("prefs", {"profile.password_manager_enabled": False, "credentials_enable_service": False})
+
+## 初始化WebDriver
+def initialize_driver():
+    driver = webdriver.Chrome(options=options)
+    action = ActionChains(driver)
+    logging_config()
+    URL_51 = "https://demo.srgeo.com.tw/TP_PROJECT_MCP_NEW/signin/?token=G67tAAZ5CYm53aNBnyWRUP5Y7mPTgNGx"
+    URL_ex = "chrome-extension://bfgblailifedppfilabonohepkofbkpm/index.html"
+    driver.get(URL_51)
+    driver.execute_script("window.open('','_blank');")
+    driver.switch_to.window(driver.window_handles[1])
+    driver.get(URL_ex)
+    driver.maximize_window()
+    return driver
+
+## logging訊息匯出設定
+def logging_config():
+    logging.basicConfig(
+        level=logging.INFO, 
+        filename='測試訊息.html', 
+        filemode='w', 
+        format='%(asctime)s - %(levelname)s - %(message)s'+'<br>'
+    )
+
+## 腳本執行方式、測試報告匯出
+# 單一測試
+def single_test(test_case_class, report_filename='測試報告', report_description='51test', log_path='D:/test_script/'):
+    test_suite = unittest.TestLoader().loadTestsFromTestCase(test_case_class)
+    result = BeautifulReport(test_suite)
+    result.report(filename=report_filename, description=report_description, log_path=log_path)
+
+# 複數測試
+def multiple_test(report_filename='測試報告', report_description='51test', log_path='D:/test_script/'):
+    basedir = "D:/test_script/"
+    test_suite = unittest.defaultTestLoader.discover(basedir, pattern='*.py')
+    result = BeautifulReport(test_suite)
+    result.report(filename=report_filename, description=report_description, log_path=log_path)
+
+## 點擊按鈕
+def click_button(driver, xpath):
+    button = driver.find_element(By.XPATH, xpath)
+    button.click()
+
+## 欄位輸入
+def send_input(driver, xpath, value):
+    input_element = driver.find_element(By.XPATH, xpath)
+    input_element.send_keys(value)
+
+## 清空欄位再輸入
+def clear_send_input(driver, xpath, value):
+    input_element = driver.find_element(By.XPATH, xpath)
+    input_element.clear()
+    input_element.send_keys(value)
